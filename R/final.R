@@ -34,5 +34,5 @@ clean_tas_data <- clean_tas_data %>%  #replace original dataset with this new ve
 
  
 # Data Export
-write_csv(clean_tas_data, "../out/clean_tas_data.csv") #save into out folder since it's a cleaned file
+write_csv(clean_tas_data, "./app_final/clean_tas_data.csv") #normally I would save this to "out" because it's a cleaned file. However, in order to be able to deploy my Shiny app it has to be inside the Shiny folder.
 

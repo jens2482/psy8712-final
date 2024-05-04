@@ -1,12 +1,12 @@
 # Script Settings and Resources
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) #set working directory
 library(shiny) #need to run this app
+library(readr) #need in order to read file
 library(dplyr) #need for running some analyses in app
 library(ggplot2) #need for visualizations in app
 
 # Data Import and Cleaning
 # import data
-clean_tas_data <- read_csv (file = '../../out/clean_tas_data.csv') #import skinny file that was created in original R script
+clean_tas_data <- read_csv (file = "clean_tas_data.csv") #import skinny file that was created in original R script
 
 # Define UI 
 ui <- fluidPage( #I believe this makes it so that it adjusts based on the size of the screen viewing your app
