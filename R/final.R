@@ -32,7 +32,72 @@ sentence_level <- clean_tas_data %>% #create intermediate new dataset
 clean_tas_data <- clean_tas_data %>%  #replace original dataset with this new version
   left_join(sentence_level, by = c("Username", "Sentence")) #adds wps amount to current dataset - I need this for calculating descriptives in my app
 
- 
+#Publication
+#not sure if this was meant to go in visualizations or publication...the shiny app allows for interactive visualizations based on selected filters. However, since we also need static images saved as outputs I included them in this script
+
+#Table #1 - descriptives table - related to RQ#1
+table_1 <- clean_tas_data %>%  
+  group_by(Sentence) %>% #compare each of the sentences from the texts to each other
+  summarize(
+    "Average Words Per Sentence" = mean(words_per_sentence), # average number of words per sentence
+    "SD Words Per Sentence" = sd(words_per_sentence),# SD of words per sentence
+    "Average Length of Word" = mean(num_ltrs), #average length of words
+    "SD Length of Word" = sd(num_ltrs) #sd length of words
+  )%>%
+  as.tibble() %>% #using this to plot with ggplot so I want it to be a tibble
+  write_csv("../out/tbl1_descriptives_table.csv") #saved to 'out' folder (even though the rest of the things below are saved to 'figs' which feels weird because they're all related to publication)
+
+#visualization #1 - descriptives plot #1 looking at words per sentence  - related to RQ#1
+fig_1 <- table_1 %>%
+  ggplot( aes(x = Sentence, y = `Average Words Per Sentence`)) + #show sentence number on x axis and average number of words on y
+  geom_bar(stat = "identity", fill = "green") + #display bars in green
+  geom_errorbar(  #add error bars
+    aes(
+      ymin = pmax(`Average Words Per Sentence` - `SD Words Per Sentence`,0), #add error bars with the lower end found by subtracting sd from mean. However some SD as quite large so I didn't want it to go below zero.
+      ymax = `Average Words Per Sentence` + `SD Words Per Sentence` #add error bars with the higher end found by adding sd to mean
+    ),
+    width = 0.2  # set width of error bars
+  ) +
+  labs(x = "Sentence", y = "Average Number of Words", title = "Average Number of Words Per Sentence") #add titles to axes and overall
+ggsave("../figs/fig1_descriptives_words.png", fig_1, height=3, width=4, units="in", dpi=600) #save to figs using journal-worthy properties according to notes
+
+
+#visualization #2 - descriptives plot #2 looking at letters per word - related to RQ#1; I know it said we were supposed to have one table and one plot for our descriptive data. However, one of my hypotheses/questions is based around my descriptive data so instead I have two plots relating to descriptive data (since I don't have a third separate hypothesis plot). Hopefully that's okay!
+fig_2 <- table_1 %>%
+  ggplot(aes(x = Sentence, y = `Average Length of Word`)) + #show sentence number on x axis and average number of words on y
+  geom_bar(stat = "identity", fill = "purple") + #display bars in purple
+  geom_errorbar(  #add error bars
+    aes(
+      ymin = `Average Length of Word` - `SD Length of Word`, #add error bars with the lower end found by subtracting sd from mean
+      ymax = `Average Length of Word` + `SD Length of Word` #add error bars with the higher end found by adding sd to mean
+    ),
+    width = 0.2  # set width of error bars
+  ) +
+  labs(x = "Sentence", y = "Average Length of Word", title = "Average Number of Letters per Word") #add titles to axes and overall
+ggsave("../figs/fig2_descriptives_letters.png", fig_2, height=3, width=4, units="in", dpi=600) #save to figs using journal-worthy properties according to notes
+
+
+#visualization #3 - frequencies plot - related to RQ#2
+fig_3 <- clean_tas_data %>%
+  filter(stop == "N") %>%  # only include non-stop words
+  count(word = word, sort = TRUE) %>% #sort by highest frequency
+  top_n(20, n) %>% # select top 20 most frequent words
+  ggplot(aes(x = reorder(word, n), y = n)) + #display in descending order of words
+  geom_bar(stat = "identity", fill = "red") + #display bars in red
+  labs(x = "Word", y = "Frequency", title = "Most Used Words") + #add titles to axes and overall
+  coord_flip() # flip axes to read words better
+ggsave("../figs/fig3_frequency.png", fig_3, height=3, width=4, units="in", dpi=600) #save to figs using journal-worthy properties according to notes
+
+#visualization #4 - sentiment plot - related to RQ#3
+fig_4 <- clean_tas_data %>%
+  filter(sentiment != "N/A") %>% # get rid of N/As
+  count(sentiment = sentiment, sort = TRUE) %>%
+  ggplot(aes(x = reorder(sentiment, n), y = n)) + #display in descending order of sentiments
+  geom_bar(stat = "identity", fill = "blue") + #display bars in blue
+  labs(x = "Sentiment", y = "Frequency", title = "Most Used Sentiments from NRC") + #add titles to axes and overall
+  coord_flip() # flip axes to read words better
+ggsave("../figs/fig4_sentiment.png", fig_4, height=3, width=4, units="in", dpi=600) #save to figs using journal-worthy properties according to notes
+
 # Data Export
 write_csv(clean_tas_data, "./app_final/clean_tas_data.csv") #normally I would save this to "out" because it's a cleaned file. However, in order to be able to deploy my Shiny app it has to be inside the Shiny folder.
 
