@@ -51,7 +51,9 @@ ui <- fluidPage( #I believe this makes it so that it adjusts based on the size o
                #create panel for descriptives - individual line comments are the same for all panels
                tabPanel("Descriptives",    #name of panel
                         h3("Descriptive Statistics"), #heading that will display
-                        tableOutput("descTable")), #output that will be displayed - is defined later in the server logic area
+                        tableOutput("descTable"), #output that will be displayed - is defined later in the server logic area
+                        plotOutput("descPlotWords"),
+                        plotOutput("descPlotLetters")),
                
                #create panel for frequencies
                tabPanel("Frequencies", 
@@ -108,20 +110,55 @@ server <- function(input, output) {
   })
   
   #create output for the "Descriptives" panel
-  output$descTable <- renderTable({ #defines descTable output that is placed in the "Frequencies" panel in UI
+  output$descTable <- renderTable({ #defines descTable output that is placed in the "Descriptives" panel in UI
 
     # Compute the descriptive statistics 
-    descriptives <- filtered_data() %>%  #create name for new dataset that will be used in table output
+    descriptives <<- filtered_data() %>%  #create name for new dataset that will be used in table output; also needed to use the double <<- symbol so that it would be saved to be used again outside of this reactive function
+      group_by(Sentence) %>% #compare each of the sentences from the texts to each other
       summarize(
         "Average Words Per Sentence" = mean(words_per_sentence), # average number of words per sentence
         "SD Words Per Sentence" = sd(words_per_sentence),# SD of words per sentence
         "Average Length of Word" = mean(num_ltrs), #average length of words
         "SD Length of Word" = sd(num_ltrs) #sd length of words
-      )
+      )%>%
+      as.tibble() #using this to plot with ggplot so I want it to be a tibble
     
     # Return the table with descriptives
-    descriptives #returns descriptives table as an output - not the prettiest but gets the point across
+    descriptives #returns descriptives table as an output
+  })
+  
+  #create plot for the "Descriptives" panel - words per sentence
+  output$descPlotWords <- renderPlot({   #defines descPlotWords output that is placed in the "Descriptives" panel in UI
     
+    #create bar plot
+    ggplot(descriptives, aes(x = Sentence, y = `Average Words Per Sentence`)) + #show sentence number on x axis and average number of words on y
+      geom_bar(stat = "identity", fill = "green") + #display bars in green
+      geom_errorbar(  #add error bars
+        aes(
+          ymin = pmax(`Average Words Per Sentence` - `SD Words Per Sentence`,0), #add error bars with the lower end found by subtracting sd from mean. However some SD as quite large so I didn't want it to go below zero.
+          ymax = `Average Words Per Sentence` + `SD Words Per Sentence` #add error bars with the higher end found by adding sd to mean
+        ),
+        width = 0.2  # set width of error bars
+      ) +
+      labs(x = "Sentence", y = "Average Number of Words", title = "Average Number of Words Per Sentence") + #add titles to axes and overall
+      theme_minimal()  #gets rid of grayish background on plot that I don't love
+  })
+  
+  #create plot for the "Descriptives" panel - letters per word
+  output$descPlotLetters <- renderPlot({   #defines descPlotLetters output that is placed in the "Descriptives" panel in UI
+    
+    #create bar plot
+    ggplot(descriptives, aes(x = Sentence, y = `Average Length of Word`)) + #show sentence number on x axis and average number of words on y
+      geom_bar(stat = "identity", fill = "purple") + #display bars in purple
+      geom_errorbar(  #add error bars
+        aes(
+          ymin = `Average Length of Word` - `SD Length of Word`, #add error bars with the lower end found by subtracting sd from mean
+          ymax = `Average Length of Word` + `SD Length of Word` #add error bars with the higher end found by adding sd to mean
+        ),
+        width = 0.2  # set width of error bars
+      ) +
+      labs(x = "Sentence", y = "Average Length of Word", title = "Average Number of Letters per Word") + #add titles to axes and overall
+      theme_minimal()  #gets rid of grayish background on plot that I don't love
   })
   
   #create output for the "Frequencies" panel
