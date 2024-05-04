@@ -1,7 +1,12 @@
-library(shiny)
-library(dplyr)
-library(ggplot2)
+# Script Settings and Resources
+library(shiny) #need to run this app
 
+#Data Import and Cleaning
+#import data
+tas_data <- read_csv (file = '../../data/tas_data.csv') #import skinny file that was created in original R script
+library(ggplot) #need for visualizations
+
+#Visualization
 # Define UI 
 ui <- fluidPage(
 
