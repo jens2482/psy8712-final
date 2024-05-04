@@ -113,15 +113,14 @@ server <- function(input, output) {
   output$descTable <- renderTable({ #defines descTable output that is placed in the "Descriptives" panel in UI
 
     # Compute the descriptive statistics 
-    descriptives <<- filtered_data() %>%  #create name for new dataset that will be used in table output; also needed to use the double <<- symbol so that it would be saved to be used again outside of this reactive function
+    descriptives <- filtered_data() %>%  #create name for new dataset that will be used in table output
       group_by(Sentence) %>% #compare each of the sentences from the texts to each other
       summarize(
         "Average Words Per Sentence" = mean(words_per_sentence), # average number of words per sentence
         "SD Words Per Sentence" = sd(words_per_sentence),# SD of words per sentence
         "Average Length of Word" = mean(num_ltrs), #average length of words
         "SD Length of Word" = sd(num_ltrs) #sd length of words
-      )%>%
-      as.tibble() #using this to plot with ggplot so I want it to be a tibble
+      )
     
     # Return the table with descriptives
     descriptives #returns descriptives table as an output
@@ -129,6 +128,16 @@ server <- function(input, output) {
   
   #create plot for the "Descriptives" panel - words per sentence
   output$descPlotWords <- renderPlot({   #defines descPlotWords output that is placed in the "Descriptives" panel in UI
+ 
+    #repeated code from above to define descriptives - since it was defined inside of a reactive funciton it doesn't save the object. I tried using <<- but had problems when trying to deploy the Shiny app so I'm just repeating it even though that's not best practice for code.
+    descriptives <- filtered_data() %>%  #create name for new dataset that will be used in table output
+      group_by(Sentence) %>% #compare each of the sentences from the texts to each other
+      summarize(
+        "Average Words Per Sentence" = mean(words_per_sentence), # average number of words per sentence
+        "SD Words Per Sentence" = sd(words_per_sentence),# SD of words per sentence
+        "Average Length of Word" = mean(num_ltrs), #average length of words
+        "SD Length of Word" = sd(num_ltrs) #sd length of words
+      )
     
     #create bar plot
     ggplot(descriptives, aes(x = Sentence, y = `Average Words Per Sentence`)) + #show sentence number on x axis and average number of words on y
@@ -146,6 +155,16 @@ server <- function(input, output) {
   
   #create plot for the "Descriptives" panel - letters per word
   output$descPlotLetters <- renderPlot({   #defines descPlotLetters output that is placed in the "Descriptives" panel in UI
+  
+    #repeated code from above to define descriptives - since it was defined inside of a reactive funciton it doesn't save the object. I tried using <<- but had problems when trying to deploy the Shiny app so I'm just repeating it even though that's not best practice for code.
+    descriptives <- filtered_data() %>%  #create name for new dataset that will be used in table output
+      group_by(Sentence) %>% #compare each of the sentences from the texts to each other
+      summarize(
+        "Average Words Per Sentence" = mean(words_per_sentence), # average number of words per sentence
+        "SD Words Per Sentence" = sd(words_per_sentence),# SD of words per sentence
+        "Average Length of Word" = mean(num_ltrs), #average length of words
+        "SD Length of Word" = sd(num_ltrs) #sd length of words
+      )
     
     #create bar plot
     ggplot(descriptives, aes(x = Sentence, y = `Average Length of Word`)) + #show sentence number on x axis and average number of words on y

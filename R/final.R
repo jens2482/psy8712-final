@@ -35,7 +35,7 @@ clean_tas_data <- clean_tas_data %>%  #replace original dataset with this new ve
 #Publication
 #not sure if this was meant to go in visualizations or publication...the shiny app allows for interactive visualizations based on selected filters. However, since we also need static images saved as outputs I included them in this script
 
-#Table #1 - descriptives table - related to RQ#1
+#table #1 - descriptives table - related to RQ#1
 table_1 <- clean_tas_data %>%  
   group_by(Sentence) %>% #compare each of the sentences from the texts to each other
   summarize(
@@ -44,7 +44,6 @@ table_1 <- clean_tas_data %>%
     "Average Length of Word" = mean(num_ltrs), #average length of words
     "SD Length of Word" = sd(num_ltrs) #sd length of words
   )%>%
-  as.tibble() %>% #using this to plot with ggplot so I want it to be a tibble
   write_csv("../out/tbl1_descriptives_table.csv") #saved to 'out' folder (even though the rest of the things below are saved to 'figs' which feels weird because they're all related to publication)
 
 #visualization #1 - descriptives plot #1 looking at words per sentence  - related to RQ#1
@@ -61,7 +60,6 @@ fig_1 <- table_1 %>%
   labs(x = "Sentence", y = "Average Number of Words", title = "Average Number of Words Per Sentence") #add titles to axes and overall
 ggsave("../figs/fig1_descriptives_words.png", fig_1, height=3, width=4, units="in", dpi=600) #save to figs using journal-worthy properties according to notes
 
-
 #visualization #2 - descriptives plot #2 looking at letters per word - related to RQ#1; I know it said we were supposed to have one table and one plot for our descriptive data. However, one of my hypotheses/questions is based around my descriptive data so instead I have two plots relating to descriptive data (since I don't have a third separate hypothesis plot). Hopefully that's okay!
 fig_2 <- table_1 %>%
   ggplot(aes(x = Sentence, y = `Average Length of Word`)) + #show sentence number on x axis and average number of words on y
@@ -75,7 +73,6 @@ fig_2 <- table_1 %>%
   ) +
   labs(x = "Sentence", y = "Average Length of Word", title = "Average Number of Letters per Word") #add titles to axes and overall
 ggsave("../figs/fig2_descriptives_letters.png", fig_2, height=3, width=4, units="in", dpi=600) #save to figs using journal-worthy properties according to notes
-
 
 #visualization #3 - frequencies plot - related to RQ#2
 fig_3 <- clean_tas_data %>%
