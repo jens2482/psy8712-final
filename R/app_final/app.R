@@ -112,19 +112,36 @@ server <- function(input, output) {
     data #output the filtered results
   })
   
-  #create output for the "Frequencies" panel (Qualitative)
+  #create output for the "Frequencies" panel
   output$freqPlot <- renderPlot({
     # Use the filtered data to count word occurrences
     word_data <- filtered_data() %>%
-      count(word = word, sort = TRUE) %>% # replace 'word' with actual column name if different
-      top_n(20, n) # Select top 20 words based on frequency
+      filter(stop == "N") %>%  # only include non-stop words
+      count(word = word, sort = TRUE) %>%
+      top_n(20, n) # select top 20 most frequent words
+
+    # create bar plot
+    ggplot(word_data, aes(x = reorder(word, n), y = n)) + #display in descending order of words
+      geom_bar(stat = "identity", fill = "blue") + #display bars in blue
+      labs(x = "Word", y = "Frequency", title = "Most Used Words") +
+      theme_minimal() + #gets rid of grayish backgroun on plot that I don't love
+      coord_flip() # flip axes to read words better
+  })
+  
+  #create output for the "Sentiment" panel
+  output$sentPlot <- renderPlot({
+    # Use the filtered data to count sentiment occurrences
+    sentiment_data <- filtered_data() %>%
+      filter(sentiment != "N/A") %>%  # get rid of N/As
+      count(sentiment = sentiment, sort = TRUE) %>% 
+      top_n(20, n) # Select top 20 sentiments based on frequency
     
     # create bar plot
-    ggplot(word_data, aes(x = reorder(word, n), y = n)) +
-      geom_bar(stat = "identity", fill = "blue") +
-      labs(x = "Word", y = "Frequency", title = "Most Used Words") +
-      theme_minimal() +
-      coord_flip() # Flip the axes for better readability of words
+    ggplot(sentiment_data, aes(x = reorder(sentiment, n), y = n)) + #display in descending order of sentiments
+      geom_bar(stat = "identity", fill = "blue") + #display bars in blue
+      labs(x = "Sentiment", y = "Frequency", title = "Most Used Words") +
+      theme_minimal() + #gets rid of grayish backgroun on plot that I don't love
+      coord_flip() # flip axes to read words better
   })
 }
 
