@@ -28,6 +28,6 @@ Please read the following before accessing any other files in this repo. All ins
 
 ### Other Important Information
 
--   A binder or a container recreates the computing environment in which I completed the whole project, allowing other users to reproduce it entirely. The link to the binder can be found [here](https://mybinder.org/v2/gh/jens2482/psy8712-final.git/HEAD).
+-   A binder or a container recreates the computing environment in which I completed the whole project, allowing other users to reproduce it entirely. The link to the binder can be found [here](https://mybinder.org/v2/gh/jens2482/psy8712-final.git/HEAD?urlpath=rstudio).
 
 -   In order to access the Shiny app without going through the steps of loading all the script files, it can be accessed at [this link](https://jens2482.shinyapps.io/app_final/).
