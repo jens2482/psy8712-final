@@ -95,6 +95,45 @@ fig_4 <- clean_tas_data %>%
   coord_flip() # flip axes to read words better
 ggsave("../figs/fig4_sentiment.png", fig_4, height=3, width=4, units="in", dpi=600) #save to figs using journal-worthy properties according to notes
 
+#rq/hypothesis #1 analysis - this part is a little weird for me. My analyses are more qualitative, which up until this point in the project seemed okay. You said to make sure it was "psyche-y" and I feel like qualitative analyses would still fall under that category...I did my best to do some formal stats to determine the answers to RQ1/H1. I also think we may use hypotheses and research questions different that ya'll...we typically have a research question with a supporting hypothesis so I'm not understanding the distinction you make here where Hs need a formal test and RQs don't. Does that mean I don't need any? Of course I'm wrapping this up too late to email you. I ran an anova for both parts of my RQ1/H1 so there are two outputs that I copy/pasted from R. For my other two, I'm going to guess those are just research questions and not hypotheses since they are more open ended so I'll provide some general observations in the document but won't perform a formal test for those. Hopefully that's okay!
+
+#number of words per sentence
+anova_result_words <- aov(words_per_sentence ~ Sentence, data = clean_tas_data) #perform an anova with sentence length as the dependent variable and sentence number as the independent variable
+summary_anova_words <- summary(anova_result_words) #get summary of anova results
+f_value <- summary_anova_words[[1]]$`F value`[1] #pull out F value
+formatted_f_value <- formatted_f_value <- str_replace(formatC(f_value, format = "f", digits = 2), "^0", "") #2 decimal places and no leading zero
+p_value <- summary_anova_words[[1]]["Sentence", "Pr(>F)"] #pull out p value
+formatted_p_value <- formatted_p_value <- str_replace(formatC(p_value, format = "f", digits = 2), "^0", "") #2 decimal places and no leading zero
+significance_statement <- if (p_value > 0.05) "not" else ""
+cat("The analysis of variance showed that the number of words per sentence did",
+    significance_statement, 
+    "vary significantly by sentence (F =",
+    formatted_f_value,
+    ", p = ",
+    formatted_p_value,
+    ")." 
+)
+#output: The analysis of variance showed that the number of words per sentence did vary significantly by sentence (F = 1104.60, p = .00).
+
+#number of letters per word
+anova_result_letters <- aov(num_ltrs ~ Sentence, data = clean_tas_data) #perform an anova with sentence length as the dependent variable and sentence number as the independent variable
+summary_anova_letters <- summary(anova_result_letters) #get summary of anova results
+f_value <- summary_anova_letters[[1]]$`F value`[1] #pull out F value
+formatted_f_value <- formatted_f_value <- str_replace(formatC(f_value, format = "f", digits = 2), "^0", "") #2 decimal places and no leading zero
+p_value <- summary_anova_letters[[1]]["Sentence", "Pr(>F)"] #pull out p value
+formatted_p_value <- formatted_p_value <- str_replace(formatC(p_value, format = "f", digits = 2), "^0", "") #2 decimal places and no leading zero
+significance_statement <- if (p_value > 0.05) "not" else ""
+cat("The analysis of variance showed that the number of letters per word did",
+    significance_statement, 
+    "vary significantly by sentence (F =",
+    formatted_f_value,
+    ", p = ",
+    formatted_p_value,
+    ")." 
+    )
+#output: The analysis of variance showed that the number of letters per word did not vary significantly by sentence (F = 3.38, p = .07).
+
+
 # Data Export
 write_csv(clean_tas_data, "./app_final/clean_tas_data.csv") #normally I would save this to "out" because it's a cleaned file. However, in order to be able to deploy my Shiny app it has to be inside the Shiny folder.
 

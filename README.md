@@ -14,8 +14,6 @@ Please read the following before accessing any other files in this repo. All ins
 
 -   R - contains R script file (final.R) to clean the data to prep it to be used for the Shiny app. This file also contains the code to create the figures seen in the 'fig' folder. This folder also contains necessary components to run the interactive Shiny app (app_final folder). There are two important files to know inside the app_final folder. First is the cleaned, skinny data file (clean_tas_data.csv) that is the output of the final.R script. This is the file used for the Shiny app. The second file is the actually R script that runs the Shiny app (app.R).
 
--   Rmd - contains the Rmd file used to create the final report
-
 ### Instructions for Reproducing Project
 
 1.  The first file to run is final.R, located within the "R" folder. After running the entire script, there will be six new files created:
@@ -30,6 +28,6 @@ Please read the following before accessing any other files in this repo. All ins
 
 ### Other Important Information
 
--   Binder - description and link
+-   A binder or a container recreates the computing environment in which I completed the whole project, allowing other users to reproduce it entirely. The link to the binder can be found [here](https://mybinder.org/v2/gh/rnlanders/datascience/HEAD?urlpath=rstudio).
 
 -   In order to access the Shiny app without going through the steps of loading all the script files, it can be accessed at [this link](https://jens2482.shinyapps.io/app_final/).
