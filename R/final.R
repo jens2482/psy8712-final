@@ -2,6 +2,7 @@
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) #set working directory
 library(tidyverse) #use tidyverse for readr, dplyr
 library(tidytext) #needed for NLP/text mining functions
+download.file("http://saifmohammad.com/WebPages/lexicons.html", "nrc_lexicon.zip")  #had to add this in to make my code work in binder
 
 # Data Import and Cleaning
 tas_data <- read_csv (file = '../data/tas_data.csv') #use tidyverse to get tbl to work better with dplyr later

@@ -1,2 +1,2 @@
-install.packages(c("tidyverse","tidytext","shiny"))
+install.packages(c("tidyverse","tidytext","shiny","stopwords","textdata"))
 
