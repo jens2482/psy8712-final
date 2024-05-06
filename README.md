@@ -4,7 +4,7 @@ Please read the following before accessing any other files in this repo. All ins
 
 ### Folder Structure for Repo
 
--   data - contains the original dataset (tas_data.csv) for this project. This data is taken from a think-aloud study with fourth and fifth grade students where they responded out loud after each sentence of a text (and they read two different texts – one narrative and one expository). Students were also randomly split into two conditions – iterative and consecutive. For the iterative condition, students only saw the current sentence displayed on the screen. For the consecutive condition, they saw the current sentence plus all previous sentences displayed on the screen. There are many different columns in this dataset related to the original study; only some will be used for the current project.
+-   data - contains the original dataset (tas_data.csv) for this project. This data is taken from a think-aloud study with fourth and fifth grade students where they responded out loud after each sentence of a text (and they read two different texts – one narrative and one expository). Students were also randomly split into two conditions – iterative and consecutive. For the iterative condition, students only saw the current sentence displayed on the screen. For the consecutive condition, they saw the current sentence plus all previous sentences displayed on the screen. There are many different columns in this dataset related to the original study; only some will be used for the current project. It also contains another file (sentiment.csv) that will be needed for one of the NLP analyses, but you won't need to do anything with the file.
 
 -   docs - contains the final report for this project
 
