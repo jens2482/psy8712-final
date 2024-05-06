@@ -2,12 +2,11 @@
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) #set working directory
 library(tidyverse) #use tidyverse for readr, dplyr
 library(tidytext) #needed for NLP/text mining functions
-download.file("http://saifmohammad.com/WebPages/lexicons.html", "nrc_lexicon.zip")  #had to add this in to make my code work in binder
 
 # Data Import and Cleaning
 tas_data <- read_csv (file = '../data/tas_data.csv') #use tidyverse to get tbl to work better with dplyr later
 stop_words <- get_stopwords() #get list of tidytext stop_words
-sentiment <- get_sentiments("nrc") %>% #get list of nrc sentiments
+sentiment <-read_csv (file = '../data/sentiment.csv') %>% #sentiments downloaded from https://sraf.nd.edu/loughranmcdonald-master-dictionary/
   group_by(word) %>% #want to look at the words with more than one sentiment because otherwise it creates a "many to many" situation when joining
   slice(1) %>%  #take only the first sentiment for each word - there is probably a better way to do this where you choose the most common sentiment but for the purposes of this assignment it was simplest to just choose the first
   ungroup() #get rid of grouping
@@ -137,4 +136,3 @@ cat("The analysis of variance showed that the number of letters per word did",
 
 # Data Export
 write_csv(clean_tas_data, "./app_final/clean_tas_data.csv") #normally I would save this to "out" because it's a cleaned file. However, in order to be able to deploy my Shiny app it has to be inside the Shiny folder.
-
